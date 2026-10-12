@@ -37,7 +37,7 @@ jobs:
             run_on_start: true
           notify:
             - type: serverchan
-              token: "${SERVERCHAN_SENDKEY}"
+              sendkey: "${SERVERCHAN_SENDKEY}"
           EOF
 
       - name: Run check-in
