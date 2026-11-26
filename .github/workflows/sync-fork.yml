@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: '0 3 * * *'
   workflow_dispatch:
+  push:
+    branches:
+      - auto-sync-fork
 
 permissions:
   contents: write
