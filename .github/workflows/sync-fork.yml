@@ -1,0 +1,27 @@
+name: Sync fork
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync with upstream
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh api --method POST repos/${{ github.repository }}/merge-upstream -f branch=nonexistent
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}
+        run: |
+          curl -s --data-urlencode "title=复刻同步失败" \
+               --data-urlencode "desp=上游合并没有成功，多半是冲突或权限问题。日志：${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+               "https://sctapi.ftqq.com/${SERVERCHAN_SENDKEY}.send"
